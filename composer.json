@@ -1,0 +1,11 @@
+{
+	"name": "infrajs/yml",
+	"description": "",
+	"license": "GPL3",
+	"autoload": {
+		"psr-4": { "infrajs\\yml\\": "/" }
+	},
+	"require":{
+		"infrajs/path":"~1"
+	}
+}
