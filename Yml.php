@@ -1,24 +1,28 @@
 <?php
 namespace infrajs\yml;
+
 use infrajs\path\Path;
 use infrajs\excel\Xlsx;
 use infrajs\template\Template;
 use infrajs\cache\Cache;
 use infrajs\catalog\Catalog;
 
-class Yml {
+class Yml
+{
 	public static $conf = array(
 		'excel' => '~yml.xlsx',
 		'name' => '',
 		'company' => ''
 	);
-	public static function show() {
+	public static function show()
+	{
 		$src=Path::theme(static::$conf['excel']);
 		if (!$src) {
 			throw new \Exception('Not found path to excel '.static::$conf['excel']);
 		}
 	}
-	public static function parse($data) {
+	public static function parse($data)
+	{
 		$gid = 0;
 		$pid = 0;
 		$groups = array();
@@ -35,7 +39,7 @@ class Yml {
 		Xlsx::runPoss($data, function (&$pos) {
 			$pos['Описание'] = Yml::tostr($pos['Описание']);
 		});
-		Xlsx::runGroups($data, function (&$group, $i, &$parent) use (&$gid,&$groups) {
+		Xlsx::runGroups($data, function (&$group, $i, &$parent) use (&$gid, &$groups) {
 			$group['id'] = ++$gid;
 			if ($parent) {
 				$group['parentId'] = $parent['id'];
@@ -62,7 +66,8 @@ class Yml {
 		$html = Template::parse('*yml/yml.tpl', $d);
 		return $html;
 	}
-	function tostr($str){
+	public static function tostr($str)
+	{
 		$str = preg_replace('/&/', '&amp;', $str);
 		$str = preg_replace('/</', '&lt;', $str);
 		$str = preg_replace('/>/', '&gt;', $str);
@@ -70,30 +75,38 @@ class Yml {
 		$str = preg_replace("/'/", '&apos;', $str);
 		return $str;
 	}
-	function init() {
+	public static function init()
+	{
 		$data = Catalog::init();
-		Xlsx::runGroups($data, function(&$group, $i, &$parent) {
-			$group['data'] = array_filter($group['data'], function (&$pos) {//Убираем позиции у которых не указана цена
+		Xlsx::runGroups($data, function (&$group, $i, &$parent) {
+			$group['data'] = array_filter($group['data'], function (&$pos) {
+			//Убираем позиции у которых не указана цена
 				//if($pos['Синхронизация']!='Да')return false;
-				if (!$pos['Цена']) return false;
-				if (strtolower($pos['Маркет']) == 'да') return true;	
+				if (!$pos['Цена']) {
+					return false;
+				}
+				if (strtolower($pos['Маркет']) == 'да') {
+					return true;
+				}
 			});
 			$group['data'] = array_values($group['data']);
 		});
 
-		Xlsx::runGroups($data, function(&$group, $i, &$parent){			
+		Xlsx::runGroups($data, function (&$group, $i, &$parent) {
 			if ($group['childs']) {
-				$group['childs'] = array_filter($group['childs'], function(&$g) {
-					if (!$g['data'] && !$g['childs']) return false;
+				$group['childs'] = array_filter($group['childs'], function (&$g) {
+					if (!$g['data'] && !$g['childs']) {
+						return false;
+					}
 					return true;
 				});
 				$group['childs'] = array_values($group['childs']);
 			}
 		}, array(), true);
-		Xlsx::runPoss($data, function(&$pos){
+		Xlsx::runPoss($data, function (&$pos) {
 			$conf = infra_config();
-			Xlsx::preparePosFiles($pos, $conf['catalog']['dir'], array('Производитель','article') );
-			foreach ($pos['images'] as $k => $v){
+			Xlsx::preparePosFiles($pos, $conf['catalog']['dir'], array('Производитель', 'article'));
+			foreach ($pos['images'] as $k => $v) {
 				$src = $pos['images'][$k];
 				$p = explode('/', $src);
 				foreach ($p as $i => $n) {
@@ -105,11 +118,12 @@ class Yml {
 		});
 		return static::parse($data);
 	}
-	if (isset($_GET['show'])) {
-		$html = Cache::exec(array($conf['catalog']['dir']), 'ymlshow', function() {
-			return Yml::init();
-		}, array(), isset($_GET['re']));
-		header("Content-type: text/xml");
-		echo $html;
-	};
 }
+
+if (isset($_GET['show'])) {
+	$html = Cache::exec(array($conf['catalog']['dir']), 'ymlshow', function () {
+		return Yml::init();
+	}, array(), isset($_GET['re']));
+	header("Content-type: text/xml");
+	echo $html;
+};

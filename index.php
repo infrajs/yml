@@ -3,7 +3,7 @@
 namespace infrajs\yml;
 
 if (!is_file('vendor/autoload.php')) {
-    chdir('../../../../');
+    chdir('../../../');
 }
 require_once('vendor/autoload.php');
 
