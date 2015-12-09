@@ -33,7 +33,7 @@ class Yml {
 		}
 
 		Xlsx::runPoss($data, function (&$pos) {
-			$pos['Описание'] = yml_tostr($pos['Описание']);
+			$pos['Описание'] = Yml::tostr($pos['Описание']);
 		});
 		Xlsx::runGroups($data, function (&$group, $i, &$parent) use (&$gid,&$groups) {
 			$group['id'] = ++$gid;
@@ -50,7 +50,7 @@ class Yml {
 		});
 
 
-		$conf = infra_config();
+		$conf = static::$conf;
 
 		$d=array(
 			"conf" => $conf,
@@ -62,7 +62,7 @@ class Yml {
 		$html = Template::parse('*yml/yml.tpl', $d);
 		return $html;
 	}
-	function yml_tostr($str){
+	function tostr($str){
 		$str = preg_replace('/&/', '&amp;', $str);
 		$str = preg_replace('/</', '&lt;', $str);
 		$str = preg_replace('/>/', '&gt;', $str);
@@ -70,7 +70,7 @@ class Yml {
 		$str = preg_replace("/'/", '&apos;', $str);
 		return $str;
 	}
-	function yml_init() {
+	function init() {
 		$data = Catalog::init();
 		Xlsx::runGroups($data, function(&$group, $i, &$parent) {
 			$group['data'] = array_filter($group['data'], function (&$pos) {//Убираем позиции у которых не указана цена
