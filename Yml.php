@@ -16,7 +16,8 @@ class Yml
 	);
 	public static function show()
 	{
-		$src=Path::theme(static::$conf['excel']);
+		$src=Path::theme('~yml.xlsx');
+		var_dump($src); die;
 		if (!$src) {
 			throw new \Exception('Not found path to excel '.static::$conf['excel']);
 		}
