@@ -1,5 +1,6 @@
 {
 	"name": "infrajs/yml",
+	"homepage":"https://github.com/infrajs/yml",
 	"description": "",
 	"license": "GPL3",
 	"autoload": {
