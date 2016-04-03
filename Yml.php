@@ -7,6 +7,7 @@ use infrajs\template\Template;
 use infrajs\cache\Cache;
 use infrajs\catalog\Catalog;
 use infrajs\view\View;
+use infrajs\access\Access;
 
 class Yml
 {
@@ -49,6 +50,7 @@ class Yml
 
 		$d=array(
 			"conf" => $conf,
+			"support" => Access::$conf["admin"]["support"],
 			"site" => View::getPath(),
 			"poss" => $poss,
 			"groups" => $groups

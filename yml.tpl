@@ -3,12 +3,12 @@
 <yml_catalog date="{~date(:Y-m-d H:i,~true)}">
 <shop>
 
-	<name>{conf.yml.name}</name>
-	<company>{conf.yml.company}</company>
+	<name>{conf.name}</name>
+	<company>{conf.company}</company>
 	<url>{site}</url>
 	<platform>Infrajs</platform>
-	<agency>{conf.yml.agency}</agency>
-	<email>{conf.admin.support}</email>
+	<agency>{conf.agency}</agency>
+	<email>{support}</email>
 	<currencies>
 		<currency id="RUR" rate="1"/>
 	</currencies>
