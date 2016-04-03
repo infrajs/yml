@@ -32,7 +32,6 @@
 		<vendor>{Производитель}</vendor>
 		<model>{article}</model>
 		<description>{Описание}</description>
-		<param name="Арт">{Арт}</param>
 		{more::param}
 		
 	</offer>
