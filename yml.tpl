@@ -26,7 +26,7 @@
  	<offer type="vendor.model" id="{id}" available="{Наличие=:да?:true?:false}">
 		<url>{...site}catalog/{~encode(producer)}/{~encode(article)}</url>
 		<price>{Цена}</price>
-		<sales_notes>Работа по 100% предоплате</sales_notes>
+		<sales_notes>Предоплата 100%</sales_notes>
 		<currencyId>RUB</currencyId>
 		<categoryId>{categoryId}</categoryId >
 		{images::image}
