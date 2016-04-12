@@ -79,6 +79,8 @@ class Yml
 				$pos['Цена']=preg_replace('/\s/', '', $pos['Цена']);
 				if (!$pos['Цена']) return false;
 				if (strtolower($pos['Маркет']) == 'да') {
+					$pos['Описание'] = strip_tags($pos['Описание']);
+					$pos['Описание'] = preg_replace('/&nbsp;/', ' ', $pos['Описание']);
 					return true;
 				}
 			});
