@@ -12,6 +12,6 @@ if (!is_file('vendor/autoload.php')) {
 
 $html = Catalog::cache('ymlshow', function () {
 	return Yml::init();
-}, array(), isset($_GET['re']));
+});
 header("Content-type: text/xml");
 echo $html;
