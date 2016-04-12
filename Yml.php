@@ -75,9 +75,9 @@ class Yml
 			$group['data'] = array_filter($group['data'], function (&$pos) {
 			//Убираем позиции у которых не указана цена
 				//if($pos['Синхронизация']!='Да')return false;
-				if (!$pos['Цена']) {
-					return false;
-				}
+				if (!$pos['Цена']) return false;
+				$pos['Цена']=preg_replace('/\s/', '', $pos['Цена']);
+				if (!$pos['Цена']) return false;
 				if (strtolower($pos['Маркет']) == 'да') {
 					return true;
 				}
