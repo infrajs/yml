@@ -31,21 +31,27 @@ class Yml
 			throw new \Exception('В конфиге yml требуется указать company, название компании с организационной формой ООО');
 		}
 
-		Xlsx::runPoss($data, function (&$pos) {
+		Xlsx::runPoss($data, function &(&$pos) {
 			$pos['Описание'] = Yml::tostr($pos['Описание']);
+			$r = null;
+			return $r;
 		});
-		Xlsx::runGroups($data, function (&$group, $i, &$parent) use (&$gid, &$groups) {
+		Xlsx::runGroups($data, function &(&$group, $i, &$parent) use (&$gid, &$groups) {
 			$group['id'] = ++$gid;
 			if ($parent) {
 				$group['parentId'] = $parent['id'];
 			}
 			$groups[] = &$group;
+			$r = null;
+			return $r;
 		});
 
-		Xlsx::runPoss($data, function (&$pos, $i, &$group) use (&$pid, &$poss) {
+		Xlsx::runPoss($data, function &(&$pos, $i, &$group) use (&$pid, &$poss) {
 			$pos['id'] = ++$pid;
 			$pos['categoryId'] = $group['id'];
 			$poss[] = &$pos;
+			$r = null;
+			return $r;
 		});
 
 		$d=array(
@@ -71,23 +77,27 @@ class Yml
 	public static function init()
 	{
 		$data = Catalog::init();
-		Xlsx::runGroups($data, function (&$group, $i, &$parent) {
+
+		Xlsx::runGroups($data, function &(&$group, $i, &$parent) {
 			$group['data'] = array_filter($group['data'], function (&$pos) {
 			//Убираем позиции у которых не указана цена
 				//if($pos['Синхронизация']!='Да')return false;
-				if (!$pos['Цена']) return false;
+				if (empty($pos['Цена'])) return false;
 				$pos['Цена']=preg_replace('/\s/', '', $pos['Цена']);
-				if (!$pos['Цена']) return false;
-				if (strtolower($pos['Маркет']) == 'да') {
+				if (empty($pos['Цена'])) return false;
+				//if (empty($pos['Наличие'])) return false;
+				if ($pos['Цена'] > 0) {
 					$pos['Описание'] = strip_tags($pos['Описание']);
 					$pos['Описание'] = preg_replace('/&nbsp;/', ' ', $pos['Описание']);
 					return true;
 				}
 			});
 			$group['data'] = array_values($group['data']);
+			$r = null;
+			return $r;
 		});
 
-		Xlsx::runGroups($data, function (&$group, $i, &$parent) {
+		Xlsx::runGroups($data, function &(&$group, $i, &$parent) {
 			if ($group['childs']) {
 				$group['childs'] = array_filter($group['childs'], function (&$g) {
 					if (!$g['data'] && !$g['childs']) {
@@ -97,10 +107,12 @@ class Yml
 				});
 				$group['childs'] = array_values($group['childs']);
 			}
+			$r = null;
+			return $r;
 		}, array(), true);
-		Xlsx::runPoss($data, function (&$pos) {
+		Xlsx::runPoss($data, function &(&$pos) {
 			$conf = Catalog::$conf;
-			Xlsx::addFiles($conf['dir'], $pos, array('Производитель', 'article'));
+			Xlsx::addFiles($conf['dir'], $pos);
 			foreach ($pos['images'] as $k => $v) {
 				$src = $pos['images'][$k];
 				$p = explode('/', $src);
@@ -110,6 +122,8 @@ class Yml
 				}
 				$pos['images'][$k] = implode('/', $p);
 			}
+			$r = null;
+			return $r;
 		});
 		return static::parse($data);
 	}
