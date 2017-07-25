@@ -7,7 +7,12 @@ use infrajs\template\Template;
 use infrajs\cache\Cache;
 use infrajs\catalog\Catalog;
 use infrajs\view\View;
+use infrajs\event\Event;
 use infrajs\access\Access;
+
+Event::$classes["Yml"] = function($pos) { 
+	return $pos["producer"].$pos["article"];
+};
 
 class Yml
 {
@@ -32,7 +37,7 @@ class Yml
 		}
 
 		Xlsx::runPoss($data, function &(&$pos) {
-			$pos['Описание'] = Yml::tostr($pos['Описание']);
+			if (isset($pos['Описание'])) $pos['Описание'] = Yml::tostr($pos['Описание']);
 			$r = null;
 			return $r;
 		});
@@ -83,14 +88,23 @@ class Yml
 			//Убираем позиции у которых не указана цена
 				//if($pos['Синхронизация']!='Да')return false;
 				if (empty($pos['Цена'])) return false;
-				$pos['Цена']=preg_replace('/\s/', '', $pos['Цена']);
+				$pos['Цена'] = preg_replace('/\s/', '', $pos['Цена']);
+				
+				$res = Event::fire('Yml.oncheck', $pos);
+				
+				if (!$res) return false;
+
+
 				if (empty($pos['Цена'])) return false;
 				//if (empty($pos['Наличие'])) return false;
 				if ($pos['Цена'] > 0) {
-					$pos['Описание'] = strip_tags($pos['Описание']);
-					$pos['Описание'] = preg_replace('/&nbsp;/', ' ', $pos['Описание']);
+					if (isset($pos['Описание'])) {
+						$pos['Описание'] = strip_tags($pos['Описание']);
+						$pos['Описание'] = preg_replace('/&nbsp;/', ' ', $pos['Описание']);
+					}
 					return true;
 				}
+				return false;
 			});
 			$group['data'] = array_values($group['data']);
 			$r = null;
