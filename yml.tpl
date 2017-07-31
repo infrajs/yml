@@ -39,4 +39,4 @@
 {param:}
 	<param name="{~key}">{.}</param>
 {image:}
-	<picture>http://{site}{.}</picture>
+	<picture>{site}{.}</picture>
