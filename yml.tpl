@@ -24,6 +24,7 @@
 {pos:}
  	<offer type="vendor.model" id="{id}" available="{Наличие=:да?:true?:false}">
 		<url>{...site}catalog/{~encode(producer)}/{~encode(article)}</url>
+		<name>{Наименование}</name>
 		<price>{Цена}</price>
 		<currencyId>RUB</currencyId>
 		<categoryId>{categoryId}</categoryId >
