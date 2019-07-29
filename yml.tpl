@@ -16,7 +16,6 @@
 	</categories>
 	<offers>
 		{poss::pos}	
-		
 	</offers>
  </shop>
  </yml_catalog>
@@ -29,7 +28,7 @@
 		<currencyId>RUB</currencyId>
 		<categoryId>{categoryId}</categoryId >
 		{images::image}
-		<vendor>{Производитель}</vendor>
+		<vendor>{producer}</vendor>
 		<model>{article}</model>
 		<description>{Описание}</description>
 		{more::param}
