@@ -12,7 +12,7 @@ use infrajs\event\Event;
 use infrajs\access\Access;
 
 Event::$classes["Yml"] = function($pos) { 
-	return $pos["producer"].$pos["article"];
+	return $pos["producer_nick"].$pos["article_nick"].$pos["item_nick"];
 };
 
 class Yml
