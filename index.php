@@ -1,16 +1,13 @@
 <?php
 
 namespace infrajs\yml;
-use infrajs\catalog\Catalog;
+use infrajs\akyatkin\Showcase;
 use infrajs\config\Config;
+use infrajs\access\Access;
+use infrajs\once\Once;
 
-if (!is_file('vendor/autoload.php')) {
-    chdir('../../../');
-    require_once('vendor/autoload.php');
-}
-
-$html = Catalog::cache( function () {
-	return Yml::init();
+$html = Once::func( function () {
+	return Yml::parse();
 });
 
 header("Content-type: text/xml");

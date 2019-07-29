@@ -5,8 +5,9 @@ use infrajs\path\Path;
 use infrajs\excel\Xlsx;
 use infrajs\template\Template;
 use infrajs\cache\Cache;
-use infrajs\catalog\Catalog;
+use akiyatkin\showcase\Showcase;
 use infrajs\view\View;
+use infrajs\load\Load;
 use infrajs\event\Event;
 use infrajs\access\Access;
 
@@ -21,12 +22,10 @@ class Yml
 		"company" => '',
 		"agancy" => ''
 	);
-	public static function parse($data)
+	/*public static function parse($poss, $groups)
 	{
 		$gid = 0;
 		$pid = 0;
-		$groups = array();
-		$poss = array();
 		$conf = static::$conf;
 		
 		if (!$conf['name']) {
@@ -35,21 +34,6 @@ class Yml
 		if (!$conf['company']) {
 			throw new \Exception('В конфиге yml требуется указать company, название компании с организационной формой ООО');
 		}
-
-		Xlsx::runPoss($data, function &(&$pos) {
-			if (isset($pos['Описание'])) $pos['Описание'] = Yml::tostr($pos['Описание']);
-			$r = null;
-			return $r;
-		});
-		Xlsx::runGroups($data, function &(&$group, $i, &$parent) use (&$gid, &$groups) {
-			$group['id'] = ++$gid;
-			if ($parent) {
-				$group['parentId'] = $parent['id'];
-			}
-			$groups[] = &$group;
-			$r = null;
-			return $r;
-		});
 
 		Xlsx::runPoss($data, function &(&$pos, $i, &$group) use (&$pid, &$poss) {
 			$pos['id'] = ++$pid;
@@ -69,7 +53,7 @@ class Yml
 		
 		$html = Template::parse('-yml/yml.tpl', $d);
 		return $html;
-	}
+	}*/
 	public static function tostr($str)
 	{
 		$str = preg_replace('/&/', '&amp;', $str);
@@ -79,66 +63,87 @@ class Yml
 		$str = preg_replace("/'/", '&apos;', $str);
 		return $str;
 	}
-	public static function init()
+	public static function parse()
 	{
-		$data = Catalog::init();
-
-		Xlsx::runGroups($data, function &(&$group, $i, &$parent) {
-			$group['data'] = array_filter($group['data'], function (&$pos) {
-			//Убираем позиции у которых не указана цена
-				//if($pos['Синхронизация']!='Да')return false;
-				if (empty($pos['Цена'])) return false;
-				$pos['Цена'] = preg_replace('/\s/', '', $pos['Цена']);
-				
-				$res = Event::fire('Yml.oncheck', $pos);
-				
-				if (!$res) return false;
-
-
-				if (empty($pos['Цена'])) return false;
-				//if (empty($pos['Наличие'])) return false;
-				if ($pos['Цена'] > 0) {
-					if (isset($pos['Описание'])) {
-						$pos['Описание'] = strip_tags($pos['Описание']);
-						$pos['Описание'] = preg_replace('/&nbsp;/', ' ', $pos['Описание']);
-					}
-					return true;
-				}
-				return false;
-			});
-			$group['data'] = array_values($group['data']);
-			$r = null;
-			return $r;
-		});
-
-		Xlsx::runGroups($data, function &(&$group, $i, &$parent) {
-			if ($group['childs']) {
-				$group['childs'] = array_filter($group['childs'], function (&$g) {
-					if (!$g['data'] && !$g['childs']) {
-						return false;
-					}
-					return true;
-				});
-				$group['childs'] = array_values($group['childs']);
+		$data = Load::loadJSON('-showcase/api/groups');
+		$groups = [];
+		$conf = static::$conf;
+		$gid = 0;
+		Xlsx::runGroups($data['root'], function &($group) use (&$groups, &$gid) {
+			$groups[$group['group_nick']] = [
+				'title' => $group['group'],
+				'id' => ++$gid
+			];
+			if ($group['parent_nick']) {
+				$groups[$group['group_nick']]['parentId'] = $groups[$group['parent_nick']]['id'];
 			}
-			$r = null;
-			return $r;
-		}, array(), true);
-		Xlsx::runPoss($data, function &(&$pos) {
-			$conf = Catalog::$conf;
-			Xlsx::addFiles($conf['dir'], $pos);
+			$r = null; return $r;
+		});
+		
+		$md = [
+			'more'=>[
+				'Цена'=>[
+					'yes' => 1
+				],
+				'images'=>[
+					'yes' => 1
+				]
+			]
+		];
+		
+		$data = Showcase::search($md);
+		$poss = $data['list'];
+		
+		$pid = 0;
+		$poss = array_filter($poss, function (&$pos) use(&$pid, $groups) {
+			//Убираем позиции у которых не указана цена
+			//if($pos['Синхронизация']!='Да')return false;
+			$res = Event::fire('Yml.oncheck', $pos);
+			if (!$res) return false;
+			
+			$pos['id'] = ++$pid;
+			$pos['categoryId'] = $groups[$pos['group_nick']]['id'];
 			foreach ($pos['images'] as $k => $v) {
 				$src = $pos['images'][$k];
 				$p = explode('/', $src);
 				foreach ($p as $i => $n) {
-					$p[$i] = urlencode($n);
+					if (!$i) continue;
+					$p[$i] = Template::$scope['~encode']($n);
 					$p[$i] = preg_replace('/\+/', '%20', $p[$i]);
 				}
 				$pos['images'][$k] = implode('/', $p);
 			}
-			$r = null;
-			return $r;
+			
+			
+			if (isset($pos['Описание'])) {
+				$pos['Описание'] = strip_tags($pos['Описание']);
+				$pos['Описание'] = preg_replace('/&nbsp;/', ' ', $pos['Описание']);
+				//Yml::tostr($pos['Описание'])
+			}
+			return true;
 		});
-		return static::parse($data);
+
+		$groups = array_values($groups);
+		
+		
+
+		
+		if (!$conf['name']) {
+			throw new \Exception('В конфиге yml требуется указать name. Наименование компании без организационный формы');
+		}
+		if (!$conf['company']) {
+			throw new \Exception('В конфиге yml требуется указать company, название компании с организационной формой ООО');
+		}
+		
+		$d = array(
+			"conf" => $conf,
+			"support" => Access::$conf["admin"]["support"],
+			"site" => View::getPath(),
+			"poss" => $poss,
+			"groups" => $groups
+		);
+		
+		$html = Template::parse('-yml/yml.tpl', $d);
+		return $html;
 	}
 }
