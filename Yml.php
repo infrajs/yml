@@ -56,7 +56,8 @@ class Yml
 	}*/
 	public static function tostr($str)
 	{
-		$str = preg_replace('/&/', '&amp;', $str);
+		//$str = strip_tags($str);
+		$str = preg_replace('/\&/', '&amp;', $str);
 		$str = preg_replace('/</', '&lt;', $str);
 		$str = preg_replace('/>/', '&gt;', $str);
 		$str = preg_replace('/"/', '&quot;', $str);
@@ -100,29 +101,32 @@ class Yml
 			//if($pos['Синхронизация']!='Да')return false;
 			$res = Event::fire('Yml.oncheck', $pos);
 			if (!$res) return false;
+			return true;
+		});
+
+		foreach ($poss as $k=>$pos) {
 			
-			$pos['id'] = ++$pid;
-			$pos['categoryId'] = $groups[$pos['group_nick']]['id'];
-			foreach ($pos['images'] as $k => $v) {
-				$src = $pos['images'][$k];
+			$poss[$k]['id'] = ++$pid;
+			$poss[$k]['categoryId'] = $groups[$pos['group_nick']]['id'];
+			foreach ($pos['images'] as $j => $v) {
+				$src = $pos['images'][$j];
 				$p = explode('/', $src);
 				foreach ($p as $i => $n) {
 					if (!$i) continue;
 					$p[$i] = Template::$scope['~encode']($n);
 					$p[$i] = preg_replace('/\+/', '%20', $p[$i]);
 				}
-				$pos['images'][$k] = implode('/', $p);
+				$poss[$k]['images'][$j] = implode('/', $p);
 			}
 			
 			
-			if (isset($pos['Описание'])) {
-				$pos['Описание'] = strip_tags($pos['Описание']);
-				$pos['Описание'] = preg_replace('/&nbsp;/', ' ', $pos['Описание']);
-				//Yml::tostr($pos['Описание'])
+			if (isset($pos['Описание'])) $poss[$k]['Описание'] = Yml::tostr($pos['Описание']);
+			if (isset($pos['Наименование'])) $poss[$k]['Наименование'] = Yml::tostr($pos['Наименование']);
+			
+			if (isset($pos['more'])) foreach ($pos['more'] as $i => $m) {
+				$poss[$k]['more'][$i] = Yml::tostr($pos['more'][$i]);
 			}
-			return true;
-		});
-
+		};
 		$groups = array_values($groups);
 		
 		
