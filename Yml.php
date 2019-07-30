@@ -122,6 +122,7 @@ class Yml
 			
 			if (isset($pos['Описание'])) $poss[$k]['Описание'] = Yml::tostr($pos['Описание']);
 			if (isset($pos['Наименование'])) $poss[$k]['Наименование'] = Yml::tostr($pos['Наименование']);
+			if (isset($pos['article'])) $poss[$k]['article'] = Yml::tostr($pos['article']);
 			
 			if (isset($pos['more'])) foreach ($pos['more'] as $i => $m) {
 				$poss[$k]['more'][$i] = Yml::tostr($pos['more'][$i]);
