@@ -113,7 +113,8 @@ class Yml
 				$p = explode('/', $src);
 				foreach ($p as $i => $n) {
 					if (!$i) continue;
-					$p[$i] = Template::$scope['~encode']($n);
+					$fn = Template::$scope['~encode'];
+					$p[$i] = $fn($n);
 					$p[$i] = preg_replace('/\+/', '%20', $p[$i]);
 				}
 				$poss[$k]['images'][$j] = implode('/', $p);
