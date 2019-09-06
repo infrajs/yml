@@ -24,18 +24,19 @@
 {pos:}
  	<offer type="vendor.model" id="{id}" available="{Наличие=:да?:true?:false}">
 		<url>{...site}catalog/{producer_nick}/{article_nick}</url>
-		<name>{Наименование}</name>
+		<model>{Наименование}</model>
 		<price>{Цена}</price>
 		<currencyId>RUB</currencyId>
 		<categoryId>{categoryId}</categoryId >
 		{images::image}
 		<vendor>{producer}</vendor>
-		<model>{article}</model>
-		<description>{Описание}</description>
+		<description><![CDATA[
+			{Описание}
+		]]></description>
+		<param name="article">{article}</param>
 		{more::param}
 		
 	</offer>
-{asfd*}<sales_notes>Предоплата 100%</sales_notes>
 {param:}
 	<param name="{~key}">{.}</param>
 {image:}
