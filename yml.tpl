@@ -2,7 +2,6 @@
 <!DOCTYPE yml_catalog SYSTEM "shops.dtd">
 <yml_catalog date="{~date(:Y-m-d H:i,~true)}">
 <shop>
-
 	<name>{conf.name}</name>
 	<company>{conf.company}</company>
 	<url>{site}</url>
@@ -19,7 +18,7 @@
 	</offers>
  </shop>
  </yml_catalog>
- {category:}
+{category:}
  		<category id="{id}" parentId="{parentId}">{title}</category>
 {pos:}
  	<offer type="vendor.model" id="{id}" available="{Наличие=:да?:true?:false}">
@@ -27,17 +26,18 @@
 		<model>{Наименование}</model>
 		<price>{Цена}</price>
 		<currencyId>RUB</currencyId>
-		<categoryId>{categoryId}</categoryId >
+		<categoryId>{categoryId}</categoryId>
 		{images::image}
 		<vendor>{producer}</vendor>
+		{Описание?:des}
+		<param name="article">{article}</param>
+		{more::param}
+	</offer>
+{des:}
 		<description><![CDATA[
 			{Описание}
 		]]></description>
-		<param name="article">{article}</param>
-		{more::param}
-		
-	</offer>
 {param:}
-	<param name="{~key}">{.}</param>
+		<param name="{~key}">{.}</param>
 {image:}
-	<picture>{site}{.}</picture>
+		<picture>{site}{.}</picture>
