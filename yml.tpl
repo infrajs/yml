@@ -21,7 +21,7 @@
 {category:}
  		<category id="{id}" parentId="{parentId}">{title}</category>
 {pos:}
- 	<offer type="vendor.model" id="{id}" available="{Наличие=:да?:true?:false}">
+ 	<offer type="vendor.model" id="{id}">
 		<url>{...site}catalog/{producer_nick}/{article_nick}</url>
 		<model>{Наименование}</model>
 		<price>{Цена}</price>
