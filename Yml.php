@@ -69,11 +69,10 @@ class Yml
 		$data = Load::loadJSON('-showcase/api/groups');
 		$groups = [];
 		$conf = static::$conf;
-		$gid = 0;
-		Xlsx::runGroups($data['root'], function &($group) use (&$groups, &$gid) {
+		Xlsx::runGroups($data['root'], function &($group) use (&$groups) {
 			$groups[$group['group_nick']] = [
 				'title' => $group['group'],
-				'id' => ++$gid
+				'id' => $group['group_id']
 			];
 			if ($group['parent_nick']) {
 				$groups[$group['group_nick']]['parentId'] = $groups[$group['parent_nick']]['id'];
