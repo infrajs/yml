@@ -3,7 +3,7 @@
 xmlns:g="http://base.google.com/ns/1.0">
 <channel>
 	<title>{conf.company}</title>
-	<link>{site}</link>
+	<link>{conf.site}</link>
 	<description>{conf.description}</description>
 	{poss::pos}
 </channel>
