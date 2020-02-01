@@ -64,8 +64,7 @@ class Yml
 		$str = preg_replace("/'/", '&apos;', $str);
 		return $str;
 	}
-	public static function parse()
-	{
+	public static function data() {
 		$data = Load::loadJSON('-showcase/api/groups');
 		$groups = [];
 		$conf = static::$conf;
@@ -134,12 +133,19 @@ class Yml
 		$d = array(
 			"conf" => $conf,
 			"support" => Access::$conf["admin"]["support"],
-			"site" => View::getPath(),
 			"poss" => $poss,
 			"groups" => $groups
 		);
-		
-		$html = Template::parse('-yml/yml.tpl', $d);
+		return $d;
+	}
+	public static function parse() {
+		$data = Yml::data();
+		$html = Template::parse('-yml/yml.tpl', $data);
+		return $html;
+	}
+	public static function rss() {
+		$data = Yml::data();
+		$html = Template::parse('-yml/rss.tpl', $data);
 		return $html;
 	}
 }

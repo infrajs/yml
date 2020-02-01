@@ -4,7 +4,7 @@
 <shop>
 	<name>{conf.name}</name>
 	<company>{conf.company}</company>
-	<url>{site}</url>
+	<url>{conf.site}</url>
 	<platform>Infrajs</platform>
 	<agency>{conf.agency}</agency>
 	<email>{support}</email>
@@ -14,7 +14,7 @@
 	<categories>{groups::category}
 	</categories>
 	<offers>
-		{poss::pos}	
+		{poss::pos}
 	</offers>
  </shop>
  </yml_catalog>
@@ -22,7 +22,7 @@
  		<category id="{id}" parentId="{parentId}">{title}</category>
 {pos:}
  	<offer type="vendor.model" id="{id}">
-		<url>{...site}catalog/{producer_nick}/{article_nick}</url>
+		<url>{conf.site}/catalog/{producer_nick}/{article_nick}</url>
 		<model>{Наименование}</model>
 		<price>{Цена}</price>
 		<currencyId>RUB</currencyId>
@@ -40,4 +40,4 @@
 {param:}
 		<param name="{~key}">{.}</param>
 {image:}
-		<picture>{site}{.}</picture>
+		<picture>{conf.site}/{.}</picture>

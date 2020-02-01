@@ -1,6 +1,8 @@
 {
 	"conf":"infrajs\\yml\\Yml",
 	"name":"",
+	"description":"",
+	"site":"",
 	"company":"",
 	"agancy":""
 }
