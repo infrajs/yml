@@ -14,6 +14,7 @@ xmlns:g="http://base.google.com/ns/1.0">
 		<link>{conf.site}/catalog/{producer_nick}/{article_nick}</link>
 		{Описание:des}
 		{images.0:image}
+		<g:availability>preorder</g:availability>
 		<g:product_type>{parent} > {group}</g:product_type>
 		<g:brand>{producer}</g:brand>
 		<g:price>{Цена}</g:price>
