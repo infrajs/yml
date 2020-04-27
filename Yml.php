@@ -79,7 +79,7 @@ class Yml
 			$r = null; return $r;
 		});
 		$mark = Showcase::getDefaultMark();
-		$mark->setVal(':more.Цена.yes=1:more.images.yes=1:count=5000');
+		$mark->setVal(':more.'.Path::encode('Цена').'.yes=1:more.images.yes=1:count=5000');
 		$md = $mark->getData();
 		$data = Showcase::search($md);
 		$poss = $data['list'];
