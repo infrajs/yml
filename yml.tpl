@@ -38,6 +38,6 @@
 			{Описание}
 		]]></description>
 {param:}
-		<param name="{~encode(~key)}">{.}</param>
+		<param name="{~key}">{.}</param>
 {image:}
 		<picture>{conf.site}/{.}</picture>
