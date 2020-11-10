@@ -3,6 +3,7 @@
 	"name":"",
 	"description":"",
 	"site":"",
+	"cost":true,
 	"company":"",
 	"agancy":""
 }
