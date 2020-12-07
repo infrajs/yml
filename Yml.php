@@ -12,7 +12,7 @@ use infrajs\event\Event;
 use infrajs\access\Access;
 
 Event::$classes["Yml"] = function($pos) { 
-	return $pos["producer_nick"].$pos["article_nick"].$pos["item_nick"];
+	return $pos["producer_nick"].$pos["article_nick"];
 };
 
 class Yml
@@ -65,7 +65,7 @@ class Yml
 		return $str;
 	}
 	public static function data() {
-		$data = Load::loadJSON('-showcase/api/groups');
+		$data = Load::loadJSON('-showcase/api2/groups');
 		$groups = [];
 		$conf = static::$conf;
 		Xlsx::runGroups($data['root'], function &($group) use (&$groups) {
@@ -86,6 +86,7 @@ class Yml
 		}
 		$md = $mark->getData();
 		$data = Showcase::search($md);
+
 		$poss = $data['list'];
 		
 		$pid = 0;
