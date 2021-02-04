@@ -102,6 +102,7 @@ class Yml
 			
 			$poss[$k]['id'] = ++$pid;
 			$poss[$k]['categoryId'] = $groups[$pos['group_nick']]['id'];
+			if (isset($pos['images']))
 			foreach ($pos['images'] as $j => $v) {
 				$src = Path::theme($pos['images'][$j]);
 				$p = explode('/', $src);
