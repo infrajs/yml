@@ -79,20 +79,17 @@ class Yml
 			$r = null; return $r;
 		});
 		$mark = Showcase::getDefaultMark();
-		if ($conf['cost']) {
-			$mark->setVal(':more.'.Path::encode('Цена').'.yes=1:more.images.yes=1:count=5000');
-		} else {
-			$mark->setVal(':more.images.yes=1:count=5000');
-		}
-		$md = $mark->getData();
-		$data = Showcase::search($md);
-
-		$poss = $data['list'];
 		
+		$mark->setVal($conf['search']);
+		
+		$md = $mark->getData();
+		$data = [];
+		Showcase::search($md, $data, 1, true);
+		//if (empty($data['list'])) $data['list'] = [];
+		$poss = $data['list'];
 		$pid = 0;
-		$poss = array_filter($poss, function (&$pos) use(&$pid, $groups) {
-			//Убираем позиции у которых не указана цена
-			//if($pos['Синхронизация']!='Да')return false;
+		
+		$poss = array_filter($poss, function ($pos) {
 			$res = Event::fire('Yml.oncheck', $pos);
 			if (!$res) return false;
 			return true;
