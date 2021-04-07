@@ -100,7 +100,7 @@ class Yml
 			$poss[$k]['categoryId'] = $groups[$pos['group_nick']]['id'];
 			if (isset($pos['images'])) {
 				foreach ($pos['images'] as $j => $v) {
-					$src = $pos['images'][$j];
+					$src = Path::theme($pos['images'][$j]);
 					$p = explode('/', $src);
 					foreach ($p as $i => $n) {
 						if (!$i) continue;
