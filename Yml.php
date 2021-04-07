@@ -87,7 +87,7 @@ class Yml
 		Showcase::search($md, $data, 1, true);
 		//if (empty($data['list'])) $data['list'] = [];
 		$poss = $data['list'];
-		$pid = 0;
+		
 		
 		$poss = array_filter($poss, function ($pos) {
 			$res = Event::fire('Yml.oncheck', $pos);
@@ -96,23 +96,21 @@ class Yml
 		});
 
 		foreach ($poss as $k=>$pos) {
-			
-			$poss[$k]['id'] = ++$pid;
+			$poss[$k]['id'] = $pos['model_id'];
 			$poss[$k]['categoryId'] = $groups[$pos['group_nick']]['id'];
-			if (!isset($pos['images'])) continue;
-			foreach ($pos['images'] as $j => $v) {
-				$src = Path::theme($pos['images'][$j]);
-				$p = explode('/', $src);
-				foreach ($p as $i => $n) {
-					if (!$i) continue;
-					$fn = Template::$scope['~encode'];
-					$p[$i] = $fn($n);
-					$p[$i] = preg_replace('/\+/', '%20', $p[$i]);
+			if (isset($pos['images'])) {
+				foreach ($pos['images'] as $j => $v) {
+					$src = $pos['images'][$j];
+					$p = explode('/', $src);
+					foreach ($p as $i => $n) {
+						if (!$i) continue;
+						$fn = Template::$scope['~encode'];
+						$p[$i] = $fn($n);
+						$p[$i] = preg_replace('/\+/', '%20', $p[$i]);
+					}
+					$poss[$k]['images'][$j] = implode('/', $p);
 				}
-				$poss[$k]['images'][$j] = implode('/', $p);
 			}
-			
-			
 			if (isset($pos['Описание'])) $poss[$k]['Описание'] = Yml::tostr($pos['Описание']);
 			if (isset($pos['Наименование'])) $poss[$k]['Наименование'] = Yml::tostr($pos['Наименование']);
 			if (isset($pos['article'])) $poss[$k]['article'] = Yml::tostr($pos['article']);
