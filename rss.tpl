@@ -17,8 +17,8 @@ xmlns:g="http://base.google.com/ns/1.0">
 		<g:availability>preorder</g:availability>
 		<g:product_type>{parent} > {group}</g:product_type>
 		<g:brand>{producer}</g:brand>
-		<g:price>{Цена}</g:price>
-		<g:id>{producer_nick}-{article_nick}</g:id>
+		<g:price>{Цена} RUB</g:price>
+		<g:id>{model_id}</g:id>
 	</item>
 	{des:}<description><![CDATA[{.}]]></description>
 	{image:}<g:image_link>{conf.site}/{.}</g:image_link>
