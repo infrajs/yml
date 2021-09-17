@@ -96,6 +96,7 @@ class Yml
 		});
 
 		foreach ($poss as $k=>$pos) {
+			$poss[$k]['availability_date'] = time() + 14*24*60*60;
 			$poss[$k]['id'] = $pos['model_id'];
 			$poss[$k]['categoryId'] = $groups[$pos['group_nick']]['id'];
 			if (isset($pos['images'])) {
@@ -111,6 +112,7 @@ class Yml
 					$poss[$k]['images'][$j] = implode('/', $p);
 				}
 			}
+
 			if (isset($pos['Описание'])) $poss[$k]['Описание'] = Yml::tostr($pos['Описание']);
 			if (isset($pos['Наименование'])) $poss[$k]['Наименование'] = Yml::tostr($pos['Наименование']);
 			if (isset($pos['article'])) $poss[$k]['article'] = Yml::tostr($pos['article']);
