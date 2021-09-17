@@ -22,7 +22,7 @@ xmlns:g="http://base.google.com/ns/1.0">
 		{Цена:price}
 		<g:id>{producer_nick}_{article_nick}</g:id>
 		<g:shipping>
-			<g:country>Россия</g:country>
+			<g:country>RU</g:country>
 			<g:service>Транспортные компании</g:service>
 			<g:price>250 RUB</g:price>
 			<g:min_handling_time>1</g:min_handling_time>
