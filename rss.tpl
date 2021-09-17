@@ -20,7 +20,7 @@ xmlns:g="http://base.google.com/ns/1.0">
 		<g:product_type>{parent} > {group}</g:product_type>
 		<g:brand>{producer}</g:brand>
 		{Цена:price}
-		<g:id>{producer_nick}_{article_nick}</g:id>
+		<g:id>{producer_nick}-{article_nick}</g:id>
 		<g:shipping>
 			<g:country>RU</g:country>
 			<g:service>Транспортные компании</g:service>
