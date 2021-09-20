@@ -117,7 +117,7 @@ class Yml
 			if (isset($pos['Наименование'])) $poss[$k]['Наименование'] = Yml::tostr($pos['Наименование']);
 			if (isset($pos['article'])) $poss[$k]['article'] = Yml::tostr($pos['article']);
 			if (isset($pos['Цена'])) {
-				$r = Template::$scope['~costround']($pos['article']);
+				$r = Template::$scope['~costround']($pos['Цена']);
 				$poss[$k]['Цена'] = (string) $r[0];
 				if ($r[1]) $poss[$k]['Цена'] .= '.'. $r[1];
 			}
