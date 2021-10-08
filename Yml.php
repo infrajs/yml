@@ -67,82 +67,84 @@ class Yml
 	public static function data() {
 		$data = Load::loadJSON('-showcase/api2/groups');
 		$groups = [];
+		$poss = [];
 		$conf = static::$conf;
-		Xlsx::runGroups($data['root'], function &($group) use (&$groups) {
-			$groups[$group['group_nick']] = [
-				'title' => $group['group'],
-				'id' => $group['group_id']
-			];
-			if ($group['parent_nick']) {
-				$groups[$group['group_nick']]['parentId'] = $groups[$group['parent_nick']]['id'];
-			}
-			$r = null; return $r;
-		});
-		$mark = Showcase::getDefaultMark();
-		
-		$mark->setVal($conf['search']);
-		
-		$md = $mark->getData();
-		$data = [];
-		Showcase::search($md, $data, 1, true);
-		//if (empty($data['list'])) $data['list'] = [];
-		$poss = $data['list'];
-		
-		
-		$poss = array_filter($poss, function ($pos) {
-			$res = Event::fire('Yml.oncheck', $pos);
-			if (!$res) return false;
-			return true;
-		});
+		if (!empty($data['root'])) {
+			Xlsx::runGroups($data['root'], function &($group) use (&$groups) {
+				$groups[$group['group_nick']] = [
+					'title' => $group['group'],
+					'id' => $group['group_id']
+				];
+				if ($group['parent_nick']) {
+					$groups[$group['group_nick']]['parentId'] = $groups[$group['parent_nick']]['id'];
+				}
+				$r = null; return $r;
+			});
+			$mark = Showcase::getDefaultMark();
+			
+			$mark->setVal($conf['search']);
+			
+			$md = $mark->getData();
+			$data = [];
+			Showcase::search($md, $data, 1, true);
+			//if (empty($data['list'])) $data['list'] = [];
+			$poss = $data['list'];
+			
+			
+			$poss = array_filter($poss, function ($pos) {
+				$res = Event::fire('Yml.oncheck', $pos);
+				if (!$res) return false;
+				return true;
+			});
 
-		foreach ($poss as $k=>$pos) {
-			$poss[$k]['availability_date'] = time() + 14*24*60*60;
-			$poss[$k]['id'] = $pos['model_id'];
-			$poss[$k]['categoryId'] = $groups[$pos['group_nick']]['id'];
-			if (isset($pos['images'])) {
-				foreach ($pos['images'] as $j => $v) {
-					$src = Path::theme($pos['images'][$j]);
-					$p = explode('/', $src);
-					foreach ($p as $i => $n) {
-						if (!$i) continue;
-						$fn = Template::$scope['~encode'];
-						$p[$i] = $fn($n);
-						$p[$i] = preg_replace('/\+/', '%20', $p[$i]);
+			foreach ($poss as $k=>$pos) {
+				$poss[$k]['availability_date'] = time() + 14*24*60*60;
+				$poss[$k]['id'] = $pos['model_id'];
+				$poss[$k]['categoryId'] = $groups[$pos['group_nick']]['id'];
+				if (isset($pos['images'])) {
+					foreach ($pos['images'] as $j => $v) {
+						$src = Path::theme($pos['images'][$j]);
+						$p = explode('/', $src);
+						foreach ($p as $i => $n) {
+							if (!$i) continue;
+							$fn = Template::$scope['~encode'];
+							$p[$i] = $fn($n);
+							$p[$i] = preg_replace('/\+/', '%20', $p[$i]);
+						}
+						$poss[$k]['images'][$j] = implode('/', $p);
 					}
-					$poss[$k]['images'][$j] = implode('/', $p);
 				}
-			}
 
-			if (isset($pos['Описание'])) $poss[$k]['Описание'] = Yml::tostr($pos['Описание']);
-			if (isset($pos['Наименование'])) $poss[$k]['Наименование'] = Yml::tostr($pos['Наименование']);
-			if (isset($pos['article'])) $poss[$k]['article'] = Yml::tostr($pos['article']);
-			if (isset($pos['Цена'])) {
-				$r = Template::$scope['~costround']($pos['Цена']);
-				$poss[$k]['Цена'] = (string) $r[0];
-				if ($r[1]) $poss[$k]['Цена'] .= '.'. $r[1];
-			}
-			
-			if (isset($pos['more'])) {
-				$more = [];
-				foreach ($pos['more'] as $i => $m) {
-					$more[Yml::tostr($i)] = Yml::tostr($m);
+				if (isset($pos['Описание'])) $poss[$k]['Описание'] = Yml::tostr($pos['Описание']);
+				if (isset($pos['Наименование'])) $poss[$k]['Наименование'] = Yml::tostr($pos['Наименование']);
+				if (isset($pos['article'])) $poss[$k]['article'] = Yml::tostr($pos['article']);
+				if (isset($pos['Цена'])) {
+					$r = Template::$scope['~costround']($pos['Цена']);
+					$poss[$k]['Цена'] = (string) $r[0];
+					if ($r[1]) $poss[$k]['Цена'] .= '.'. $r[1];
 				}
-				$poss[$k]['more'] = $more;
-			}
+				
+				if (isset($pos['more'])) {
+					$more = [];
+					foreach ($pos['more'] as $i => $m) {
+						$more[Yml::tostr($i)] = Yml::tostr($m);
+					}
+					$poss[$k]['more'] = $more;
+				}
+				
+			};
+			$groups = array_values($groups);
 			
-		};
-		$groups = array_values($groups);
-		
-		
+			
 
-		
-		if (!$conf['name']) {
-			throw new \Exception('В конфиге yml требуется указать name. Наименование компании без организационный формы');
+			
+			if (!$conf['name']) {
+				throw new \Exception('В конфиге yml требуется указать name. Наименование компании без организационный формы');
+			}
+			if (!$conf['company']) {
+				throw new \Exception('В конфиге yml требуется указать company, название компании с организационной формой ООО');
+			}
 		}
-		if (!$conf['company']) {
-			throw new \Exception('В конфиге yml требуется указать company, название компании с организационной формой ООО');
-		}
-		
 		$d = array(
 			"conf" => $conf,
 			"support" => Access::$conf["admin"]["support"],
