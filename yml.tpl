@@ -39,4 +39,4 @@
 {param:}
 		<param name="{~key}">{.}</param>
 {image:}
-		<picture>{conf.site}/{.}</picture>
+		<picture>{.}</picture>

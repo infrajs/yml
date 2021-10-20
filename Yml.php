@@ -104,17 +104,18 @@ class Yml
 				if (isset($pos['images'])) {
 					foreach ($pos['images'] as $j => $v) {
 						$src = Path::theme($pos['images'][$j]);
-						$p = explode('/', $src);
-						foreach ($p as $i => $n) {
-							if (!$i) continue;
-							$fn = Template::$scope['~encode'];
-							$p[$i] = $fn($n);
-							$p[$i] = preg_replace('/\+/', '%20', $p[$i]);
+						if ($src) { //Может не быть если это адрес в инете
+							$p = explode('/', $src);
+							foreach ($p as $i => $n) {
+								if (!$i) continue;
+								$fn = Template::$scope['~encode'];
+								$p[$i] = $fn($n);
+								$p[$i] = preg_replace('/\+/', '%20', $p[$i]);
+							}
+							$poss[$k]['images'][$j] = $conf['site'].'/'.implode('/', $p);
 						}
-						$poss[$k]['images'][$j] = implode('/', $p);
 					}
 				}
-
 				if (isset($pos['Описание'])) $poss[$k]['Описание'] = Yml::tostr($pos['Описание']);
 				if (isset($pos['Наименование'])) $poss[$k]['Наименование'] = Yml::tostr($pos['Наименование']);
 				if (isset($pos['article'])) $poss[$k]['article'] = Yml::tostr($pos['article']);

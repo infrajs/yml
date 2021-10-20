@@ -32,5 +32,5 @@ xmlns:g="http://base.google.com/ns/1.0">
 		</g:shipping>
 	</item>
 	{des:}<description><![CDATA[{.}]]></description>
-	{image:}<g:image_link>{conf.site}/{.}</g:image_link>
+	{image:}<g:image_link>{.}</g:image_link>
 	{price:}<g:price>{.} RUB</g:price>
