@@ -1,7 +1,6 @@
 <?php
 
 namespace infrajs\yml;
-use infrajs\akyatkin\Showcase;
 use infrajs\config\Config;
 use infrajs\access\Access;
 use infrajs\once\Once;

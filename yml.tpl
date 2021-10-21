@@ -20,7 +20,7 @@
 {category:}
  		<category id="{id}" parentId="{parentId}">{title}</category>
 {pos:}
- 	<offer type="vendor.model" id="{id}">
+ 	<offer type="vendor.model" id="{id}" {(Наличие&(Наличие!:На заказ))?:avtrue?:avfalse}>
 		<url>{conf.site}/catalog/{producer_nick}/{article_nick}</url>
 		<model>{Наименование}</model>
 		<price>{Цена}</price>
@@ -32,6 +32,8 @@
 		<param name="article">{article}</param>
 		{more::param}
 	</offer>
+{avtrue:}available="true"
+{avfalse:}available="false"
 {des:}
 		<description><![CDATA[
 			{Описание}
