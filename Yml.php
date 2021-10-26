@@ -64,7 +64,7 @@ class Yml
 		$str = preg_replace("/'/", '&apos;', $str);
 		return $str;
 	}
-	public static function data() {
+	public static function data($modelids = false) {
 		$data = Load::loadJSON('-showcase/api2/groups');
 		$groups = [];
 		$poss = [];
@@ -80,23 +80,40 @@ class Yml
 				}
 				$r = null; return $r;
 			});
-			$mark = Showcase::getDefaultMark();
+
+
+			if (!$modelids) {
+				$mark = Showcase::getDefaultMark();
+				$mark->setVal($conf['search']);
+				$md = $mark->getData();
+				$data = [];
+				Showcase::search($md, $data, 1, true);
+				//if (empty($data['list'])) $data['list'] = [];
+				$poss = $data['list'];
+			} else {
+				$poss = [];
+				foreach ($modelids as $model_id) {
+					$model = Showcase::getModelEasyById($model_id);
+					Showcase::addMore($model);
+					$poss[] = $model;
+					// echo '<pre>';
+					// print_r($model);
+					// exit;
+				}
+			}
 			
-			$mark->setVal($conf['search']);
 			
-			$md = $mark->getData();
-			$data = [];
-			Showcase::search($md, $data, 1, true);
-			//if (empty($data['list'])) $data['list'] = [];
-			$poss = $data['list'];
-			
-			
+
+
+			//$poss = Yml::checkPos($poss);
+
+
+
 			$poss = array_filter($poss, function ($pos) {
 				$res = Event::fire('Yml.oncheck', $pos);
 				if (!$res) return false;
 				return true;
 			});
-
 			foreach ($poss as $k=>$pos) {
 				$poss[$k]['availability_date'] = time() + 14*24*60*60;
 				$poss[$k]['id'] = $pos['model_id'];
