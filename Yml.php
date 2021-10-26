@@ -95,10 +95,9 @@ class Yml
 				foreach ($modelids as $model_id) {
 					$model = Showcase::getModelEasyById($model_id);
 					Showcase::addMore($model);
-					$poss[] = $model;
-					// echo '<pre>';
-					// print_r($model);
-					// exit;
+					if (isset($model['Цена']) && !empty($model['images'])) {
+						$poss[] = $model;
+					}
 				}
 			}
 			
